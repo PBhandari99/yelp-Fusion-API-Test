@@ -10,22 +10,22 @@ import UIKit
 import YelpAPI
 import Alamofire
 
-let client_id = "FBMKUFb2Y1aZuymB93IOKA"
-let client_secret = "XpGwn6NcCC9np1UT40vz7QN9kawnpnvtg6FVnV3aISEzD5gLKqM29TBbzoGb7prp"
+let client_id = "ClientID"
+let client_secret = "ClientSecret"
 
 class yelpClient: NSObject {
-    
+
     static var accessToken: String?
     static var tokenType: String?
-    
-    
+
+
     class func getAccessToken() {
         let parameters: Parameters = ["client_id": client_id, "client_secret": client_secret]
         Alamofire.request("https://api.yelp.com/oauth2/token", method: .post, parameters: parameters, encoding: URLEncoding.default, headers: nil).response {
             response in
             print("Request: \((response.request)!)")
             print("Response: \((response.response)!)")
-            
+
             if let data = response.data {
                 let dict = try! JSONSerialization.jsonObject(with: data, options: []) as! NSDictionary
                 print("Access Token: \((dict["access_token"])!)")
@@ -35,11 +35,11 @@ class yelpClient: NSObject {
             }
         }
     }
-    
+
     class func getRestaurents(searchTerm: String) {
         let parameters: Parameters = ["term": searchTerm as AnyObject]
 //        let headers: HTTPHeaders = [tokenType!: accessToken!] ?latitude=37.786882&longitude=-122.399972
-        Alamofire.request("https://api.yelp.com/v3/businesses/search?location=WashingtonDC", method: .get, parameters: parameters, encoding: JSONEncoding.default, headers: ["Authorization": "Bearer zYIn6wulacUmKwkyLLFxg7QHRJbhKddWVYRzAqhlsJot24YYq-eZSVfXqyJ1X2EvsAbpqqv7rn74z7qostqMGXTSfddyzGanGCFpMLWnLz8BnPQoI00Z6qGGcj_jWHYx"]).response {
+        Alamofire.request("https://api.yelp.com/v3/businesses/search?location=WashingtonDC", method: .get, parameters: parameters, encoding: JSONEncoding.default, headers: ["Authorization": "Bearer AccessToken"]).response {
             response in
             if let data = response.data {
                 let dict = try! JSONSerialization.jsonObject(with: data, options: []) as! NSDictionary
@@ -52,7 +52,7 @@ class yelpClient: NSObject {
         let query = YLPQuery(location: "Washington DC, DC")
         query.term = "restaurants"
         query.limit = 20
-        
+
         YLPClient.authorize(withAppId: client_id, secret: client_secret) { (success: YLPClient?, error: Error?) in
             if error != nil {
                 print("error: \(String(describing: error?.localizedDescription))")
@@ -72,6 +72,6 @@ class yelpClient: NSObject {
             }
         }
     }
-    
-    
+
+
 }
